@@ -14,12 +14,10 @@ spring:
 
   jpa:
     hibernate:
-      # validate: Hibernate NO crea tablas; Flyway es quien las gestiona
       ddl-auto: validate
     open-in-view: false
 
-# JWT propio (no Keycloak). El secret debe ser largo (>= 256 bits para HS256).
 app:
   jwt:
     secret: "laboratorio-1-sebastian-herrera-clave-secreta-muy-larga-para-hs256-2026"
-    expiration-ms: 86400000 # 24 horas
+    expiration-ms: 86400000
