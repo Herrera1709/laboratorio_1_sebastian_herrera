@@ -1,5 +1,7 @@
 HELP.md
 target/
+*.pdf
+laboratorio_1_*.json
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
