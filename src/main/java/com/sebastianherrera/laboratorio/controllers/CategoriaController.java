@@ -4,6 +4,7 @@ import com.sebastianherrera.laboratorio.dto.CategoriaDTO;
 import com.sebastianherrera.laboratorio.mappers.CategoriaMapper;
 import com.sebastianherrera.laboratorio.model.Categoria;
 import com.sebastianherrera.laboratorio.service.CategoriaService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/categorias")
@@ -64,9 +66,16 @@ public class CategoriaController {
 
     @PreAuthorize("hasAuthority('SUPER-ADMIN-ROLE')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        return categoriaService.delete(id)
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.notFound().build();
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        var resultado = categoriaService.delete(id);
+
+        if (resultado.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        if (!resultado.get()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("message", "La categoría tiene productos asociados"));
+        }
+        return ResponseEntity.noContent().build();
     }
 }

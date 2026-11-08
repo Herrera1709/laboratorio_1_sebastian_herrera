@@ -23,4 +23,11 @@ public class AuthController {
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO request) {
         return ResponseEntity.ok(authService.login(request));
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<LoginResponseDTO> register(@RequestBody LoginRequestDTO request) {
+        return authService.register(request)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
 }

@@ -2,6 +2,7 @@ package com.sebastianherrera.laboratorio.service;
 
 import com.sebastianherrera.laboratorio.model.Categoria;
 import com.sebastianherrera.laboratorio.repository.CategoriaRepository;
+import com.sebastianherrera.laboratorio.repository.ProductoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,9 +13,11 @@ import java.util.Optional;
 public class CategoriaService {
 
     private final CategoriaRepository categoriaRepository;
+    private final ProductoRepository productoRepository;
 
-    public CategoriaService(CategoriaRepository categoriaRepository) {
+    public CategoriaService(CategoriaRepository categoriaRepository, ProductoRepository productoRepository) {
         this.categoriaRepository = categoriaRepository;
+        this.productoRepository = productoRepository;
     }
 
     public List<Categoria> findAll() {
@@ -40,12 +43,18 @@ public class CategoriaService {
         });
     }
 
+    /**
+     * @return empty = no existe, false = tiene productos, true = eliminada
+     */
     @Transactional
-    public boolean delete(Long id) {
+    public Optional<Boolean> delete(Long id) {
         if (!categoriaRepository.existsById(id)) {
-            return false;
+            return Optional.empty();
+        }
+        if (productoRepository.existsByCategoriaId(id)) {
+            return Optional.of(false);
         }
         categoriaRepository.deleteById(id);
-        return true;
+        return Optional.of(true);
     }
 }
